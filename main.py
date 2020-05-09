@@ -2,12 +2,14 @@ import preprocessing as pp
 import predictor as pr
 import question_generator as qg
 import distractor_generator as dg
+import sentence_ranker as sr
 
 models = ['gaussian_naive_bayes', 'logistic_regression']
 
 # Generate Questions
 def generateQuestions(text, count):
 	# Extract words
+	text = sr.rearrangeByRank(text)
 	df = pp.generateDf(text)
 	wordsDf = pp.prepareDf(df)
 
