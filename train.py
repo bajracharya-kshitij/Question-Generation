@@ -9,6 +9,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
 from sklearn.linear_model import LogisticRegression
 
+from sklearn.metrics import accuracy_score
+
 squadPath = 'data/squad-v1/'
 datasetFile = 'data/squad-v1/squad.csv'
 
@@ -49,25 +51,26 @@ def getDf(path):
 	return pd.concat([train, dev], ignore_index=True)
 
 def start(modelFile, classifier):
+	df = getProcessedSquad()
+	df = pp.encodeAndDropColumns(df)
+
+	x_data = df.drop(labels=['isAnswer'], axis=1)
+	y_data = df['isAnswer']
+	x_train, x_test, y_train, y_test = train_test_split(x_data, y_data, test_size=0.2, random_state=4)
+
 	if pickle_exists(modelFile):
 		print('\nPickle already exists. Loading from file ' + modelFile + '.pkl')
 		model = load_model(modelFile)
 	else:
 		print('\nNo pickle found. Training model and saving to file ' + modelFile + '.pkl')
 
-		df = getProcessedSquad()
-		df = pp.encodeAndDropColumns(df)
-
-		x_data = df.drop(labels=['isAnswer'], axis=1)
-		y_data = df['isAnswer']
-		x_train, x_test, y_train, y_test = train_test_split(x_data, y_data, test_size=0.2, random_state=4)
-
 		model = classifier.fit(x_train, y_train)
 		save_model(model, modelFile)
 
-		y_pred = model.predict(x_test)
-		correctCount = (y_test == y_pred).sum()
-		print('Correctly guessed:', '{:.2f}%'.format((correctCount / len(y_test)) * 100))
+	y_pred = model.predict(x_test)
+	correctCount = (y_test == y_pred).sum()
+	print('Correctly guessed:', '{:.2f}%'.format((correctCount / len(y_test)) * 100))
+	print('Accuracy score: ', accuracy_score(y_test, y_pred))
 
 def pickle_exists(filename):
     file = Path('models/' + filename + '.pkl')

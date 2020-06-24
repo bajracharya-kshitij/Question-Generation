@@ -8,6 +8,9 @@
 /data/squad-v1/dev-v1.1.json
 /data/squad-v1/train-v1.1.json
 /data/squad-v1/squad.csv
+/data/sciq/test.json
+/data/sciq/train.json
+/data/sciq/valid.json
 
 __pycache__
 

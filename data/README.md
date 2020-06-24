@@ -9,6 +9,12 @@ Download [SQuADv1 ](https://www.kaggle.com/stanfordu/stanford-question-answering
 	squad-v1\dev-v1.1.json
 	squad-v1\train-v1.1.json
 	
+
+Download [SciQ](https://allenai.org/data/sciq) and place the files in the *sciq* folder.
+
+	sciq\test.json
+	sciq\train.json
+	sciq\valid.json
 	
 ## Word embeddings
 For the generation of the **incorrect answers** we're going to use the pretrained glove embeddings.
