@@ -22,3 +22,5 @@ data/.DS_Store
 Generated_Questions.docx
 
 words.pyc
+preprocessing.pyc
+reports/
