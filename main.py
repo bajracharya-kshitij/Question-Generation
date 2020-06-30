@@ -35,13 +35,13 @@ def generateQuestions(text, count):
 		# Print
 		print('Text:')
 		print(text + '\n')
-		for i in range(count):
-			print('Question ' + str(i + 1) + ':')
-			print(questions[i]['question'])
+		for index, question in enumerate(questions):
+			print('Question ' + str(index + 1) + ':')
+			print(question['question'])
 
 			options = []
-			options.append(questions[i]['answer'])
-			options.extend(questions[i]['distractors'])
+			options.append(question['answer'])
+			options.extend(question['distractors'])
 			random.shuffle(options)
 
 			print()
