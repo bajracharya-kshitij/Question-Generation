@@ -39,6 +39,9 @@ def generateQuestions(text, count):
 			print('Question ' + str(index + 1) + ':')
 			print(question['question'])
 
+			print('Wh Question ' + str(index + 1) + ':')
+			print(question['whQuestion'])
+
 			options = []
 			options.append(question['answer'])
 			options.extend(question['distractors'])

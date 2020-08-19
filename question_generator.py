@@ -1,4 +1,8 @@
 import spacy
+import uuid
+import pandas as pd
+
+from translator import translator
 
 nlp = spacy.load('en_core_web_sm')
 
@@ -6,6 +10,7 @@ def addQuestions(answers, text):
 	doc = nlp(text)
 	currentAnswerIndex = 0
 	qaPair = []
+	sentencesAndUuid = []
 
     #Check wheter each token is the next answer
 	for sent in doc.sents:
@@ -26,12 +31,24 @@ def addQuestions(answers, text):
 			#If the current token is corresponding with the answer, add it 
 			if answerIsFound:
 				question = blankAnswer(token.i, token.i + len(answerDoc) - 1, sent.start, sent.end, doc)
-                
-				qaPair.append({'question' : question, 'answer': answers[currentAnswerIndex]['word'], 'prob': answers[currentAnswerIndex]['prob']})
+				unique_id = uuid.uuid4()
+
+				qaPair.append({
+					'question' : question,
+					'answer': answers[currentAnswerIndex]['word'], 
+					'prob': answers[currentAnswerIndex]['prob'],
+					'uuid': unique_id})
+
+				sentencesAndUuid.append({
+					'sentence' : str(sent),
+					'uuid': unique_id})          
                 
 				currentAnswerIndex += 1
-                
-	return qaPair
+    
+	qaPairDf = pd.DataFrame(qaPair)  
+	translatedDf = translator.translate(pd.DataFrame(sentencesAndUuid))
+	mergedDf = pd.merge(qaPairDf, translatedDf, on='uuid')
+	return mergedDf
 
 
 def blankAnswer(firstTokenIndex, lastTokenIndex, sentStart, sentEnd, doc):
@@ -45,5 +62,6 @@ def blankAnswer(firstTokenIndex, lastTokenIndex, sentStart, sentEnd, doc):
 	return question
 
 def sortAnswers(qaPairs):
-	orderedQaPairs = sorted(qaPairs, key=lambda qaPair: qaPair['prob'])
+	pairs = qaPairs.to_dict('records')
+	orderedQaPairs = sorted(pairs, key=lambda pair: pair['prob'])
 	return orderedQaPairs  
